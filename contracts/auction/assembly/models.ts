@@ -19,3 +19,21 @@ export class SmartAuction {
     this.endTime = endTime;
   }
 }
+
+@nearBindgen
+export class AuctionLot {
+  name: string;
+  imageUrl: string;
+
+  constructor(name: string, imageUrl: string) {
+    this.name = name;
+    this.imageUrl = imageUrl;
+  }
+}
+
+@nearBindgen
+export class AuctionBid {
+  sender: AccountId = context.sender;
+  bid: Money = context.attachedDeposit;
+  date: Timestamp = context.blockTimestamp;
+}
