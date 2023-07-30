@@ -40,7 +40,85 @@ export class Auctions {
     return null;
   }
 
+  /**
+   * Метод выводязий список аукционов
+   */
+  list_auctions(): Array<SmartAuction> {
+    let result = new Array<SmartAuction>();
+    for (let i = 0; i < this.auctions.length; i++) {
+      const entry = this.auctions[i];
+      result.push(entry);
+    }
+    return result;
+  }
 
+  /**
+   * Метод для закрытия аукциона
+   */
+  end_auction(auctionId: u32): void {
+    this.assert_auction_id(auctionId);
+
+    let auction = this.auctions[auctionId];
+    this.assert_auction_owner(auction);
+    this.assert_auction_is_open(auction);
+
+    auction.ended = true;
+    this.auctions.replace(auctionId, auction);
+
+    this.transfer(auction);
+  }
+
+  /**
+   * Метод для отмены аукциона
+   */
+  cancel_auction(auctionId: u32): void {
+    this.assert_auction_id(auctionId);
+
+    let auction = this.auctions[auctionId];
+    this.assert_auction_owner(auction);
+    this.assert_auction_is_open(auction);
+
+    auction.canceled = true;
+    this.auctions.replace(auctionId, auction);
+  }
+
+  /**
+   * Метод для размещения ставки
+   */
+  place_bid(auctionId: u32): void {
+    this.assert_auction_id(auctionId);
+
+    let auction = this.auctions[auctionId];
+    this.assert_auction_is_open(auction);
+
+    const bid = new AuctionBid();
+    this.assert_bid_is_highest(auction, bid);
+
+    auction.bids.push(bid);
+    auction.highestBid = bid.bid;
+    auction.highestBidder = bid.sender;
+    this.auctions.replace(auctionId, auction);
+  }
+
+  @mutateState()
+  on_transfer_complete(): void {
+    assert_self();
+    assert_single_promise_success();
+
+    logging.log('Успешно выполнено!');
+
+  }
+
+  /**
+   * Метод для перевод денег от покупателя к продавцу
+   */
+  private transfer(auction: SmartAuction): void {
+    this.assert_auction_owner(auction);
+    const to_self = Context.contractName;
+    const to_auction_owner = ContractPromiseBatch.create(auction.owner);
+    const promise = to_auction_owner.transfer(auction.highestBid);
+    promise.then(to_self).function_call('on_transfer_complete', '{}', u128.Zero, XCC_GAS);
+  }
 
   /**
    * Вспомогательные ассерты
