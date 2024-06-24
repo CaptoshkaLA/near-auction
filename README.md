@@ -1,6 +1,12 @@
-To start the server server.py responsible for the machine learning model, you must first install all the necessary libraries.
-Server server.py is run by the python command server.py . In case of successful launch, the line should appear in the console: `Running on http://127.0.0.1:5000 `
+# **BACKEND 1. ML Model Server Setup**
+To start the server server.py responsible for the machine learning model, you must first install all the necessary libraries
+<br/>
+Server server.py is run by the python command server.py 
+<br/>
+In case of successful launch, the line should appear in the console: <br/>
+`Running on http://127.0.0.1:5000 `
 
+# **BACKEND 2. Auction Setup Instructions**
 Предварительная инструкция по сборке аукциона:
 
 1. Регистрируем аккаунт в тестовой среде https://testnet.mynearwallet.com/
@@ -9,8 +15,17 @@ Server server.py is run by the python command server.py . In case of successful 
 4. После успешной авторизации собираем проект командой npm run build:release
 5. Далее запускаем команду near dev-deploy ./build/release/auction.wasm. После которой получим сообщение в виде <Done deploying to dev-1684073187306-81108309936010>
 6. Задаем глобальную переменную командой export CONTRACT=dev-1684073187306-81108309936010
-7. Если вы используете WIndows, то команды будут выглядеть следующим образом.
+7. Если вы используете Windows, то команды будут выглядеть следующим образом.
 8. Команда для получения списка аукционов: near view %CONTRACT% list_auctions
 9. Команда для создания аукциона: near call %CONTRACT% create_auction "{\"lotName\": \"Villa #001\", \"lotImageUrl\": \"https://images.unsplash.com/photo-1512917774080-9991f1c4c750\"}" --accountId captoshkala.testnet
 10. Команда для отмены аукциона: near call %CONTRACT% cancel_auction "{\"auctionId\": 0}" --accountId captoshkala.testnet
 11. Команда для завершения аукциона: near call %CONTRACT% end_auction "{\"auctionId\": 0}" --accountId captoshkala.testnet --gas=300000000000000
+
+# **FRONTEND 3. React app start**
+Run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+```
